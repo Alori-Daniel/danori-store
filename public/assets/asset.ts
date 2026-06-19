@@ -37,6 +37,8 @@ export const assets = {
   contactInfo: "/assets/contact_info.svg",
   location: "/assets/location.svg",
   maleAvatar: "/assets/male_avatar.svg",
+  motocross: "/assets/Motocross.svg",
+  orderComplete: "/assets/Order_completed.svg",
 
   instagram: "/assets/Instagram.svg",
   snapchat: "/assets/Snapchat.svg",

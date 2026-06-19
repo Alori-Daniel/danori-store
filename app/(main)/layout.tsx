@@ -5,7 +5,7 @@ function Mainlayout({ children }: { children: React.ReactNode }) {
   return (
     <div>
       <Navbar />
-      {children}
+      <div className="max-w-[1544px] mx-auto p-1 ">{children}</div>
     </div>
   );
 }
