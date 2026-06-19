@@ -19,11 +19,10 @@ const navItems: NavItem[] = [
   { label: "Contact", href: "/contact", key: "contact" },
 ];
 
-function Navbar({ user }: User | null) {
+function Navbar({ user }: { user: User | undefined }) {
   const router = useRouter();
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
-  console.log("user", user);
 
   useEffect(() => {
     setIsOpen(false);

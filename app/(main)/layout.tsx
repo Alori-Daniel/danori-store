@@ -1,16 +1,17 @@
+"use client";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
+import { useAppContext } from "@/context/AppContext";
 import { createClient } from "@/utils/supabase/server";
 import React from "react";
 
-async function Mainlayout({ children }: { children: React.ReactNode }) {
-  const supabase = await createClient();
-  const { data: user } = await supabase.auth.getUser();
+function Mainlayout({ children }: { children: React.ReactNode }) {
+  const { session, setSession } = useAppContext();
+  // console.log(session);
 
-  console.log("logged in user", user);
   return (
     <div>
-      <Navbar user={user} />
+      <Navbar user={session?.user} />
       <div className="max-w-[1544px] mx-auto p-1 ">{children}</div>
       <Footer />
     </div>

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Andada_Pro, Geist_Mono } from "next/font/google";
 import { Toaster } from "react-hot-toast";
 import "./globals.css";
+import { AppContextProvider } from "@/context/AppContext";
 
 const andada = Andada_Pro({
   variable: "--font-andada",
@@ -31,23 +32,26 @@ export default function RootLayout({
       className={`${andada.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className={`${andada.className} min-h-full flex flex-col`}>
-        <Toaster
-          position="top-right"
-          toastOptions={{
-            duration: 3500,
-            style: {
-              borderRadius: "16px",
-              background: "#03081f",
-              color: "#fff",
-            },
-            success: {
+        <AppContextProvider>
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              duration: 3500,
               style: {
+                borderRadius: "16px",
                 background: "#03081f",
+                color: "#fff",
               },
-            },
-          }}
-        />
-        {children}
+              success: {
+                style: {
+                  background: "#03081f",
+                },
+              },
+            }}
+          />
+
+          {children}
+        </AppContextProvider>
       </body>
     </html>
   );
