@@ -1,6 +1,7 @@
 "use client";
 import { assets } from "@/public/assets/asset";
 import Image from "next/image";
+import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -67,7 +68,10 @@ function Navbar() {
             width={30}
             height={30}
           />
-          <button className=" hidden sm:flex flex-row gap-3 bg-banner px-3 rounded-full justify-center items-center h-9 lg:h-[61px] lg:w-[234px] border">
+          <Link
+            href={"/login"}
+            className=" hidden sm:flex flex-row gap-3 bg-banner px-3 rounded-full justify-center items-center h-9 lg:h-[61px] lg:w-[234px] border"
+          >
             <Image
               src={assets.maleAvatar}
               alt="Male Avatar"
@@ -78,7 +82,7 @@ function Navbar() {
             <p className="text-background lg:text-lg text-base font-normal">
               Login/Signup
             </p>
-          </button>
+          </Link>
         </div>
       </div>
 
@@ -167,7 +171,8 @@ function Navbar() {
             })}
           </ul>
 
-          <button
+          <Link
+            href={"/login"}
             type="button"
             className={`mt-auto flex w-full flex-row items-center justify-center gap-3 rounded-full bg-banner px-3 py-3 transition-[transform,opacity] duration-300 ease-out ${isOpen ? "translate-x-0 opacity-100" : "translate-x-6 opacity-0"}`}
             style={{ transitionDelay: isOpen ? "260ms" : "0ms" }}
@@ -182,7 +187,7 @@ function Navbar() {
             <p className="text-background text-base font-normal">
               Login/Signup
             </p>
-          </button>
+          </Link>
         </div>
       </div>
     </div>

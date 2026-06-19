@@ -100,7 +100,7 @@ function page() {
         {/* All Offers */}
       </div>
 
-      <div className="px-3 border lg:px-16 h-[90px] flex flex-row items-center justify-between">
+      <div className="px-3  lg:px-16 h-[90px] flex flex-row items-center justify-between">
         <h1 className="font-bold text-lg lg:text-4xl">
           All Offers from Danori's East London
         </h1>
