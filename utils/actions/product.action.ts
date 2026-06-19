@@ -20,3 +20,29 @@ export async function fetchProducts(): Promise<ProductParams[]> {
 
   return products;
 }
+
+export async function fetchProductsById(
+  id: string,
+): Promise<ProductParams | null> {
+  const supabase = await createClient();
+  const { data: product, error } = await supabase
+    .from("products")
+    .select(
+      `
+    *,
+    categories:category (
+      id,
+      name
+    )
+  `,
+    )
+    .eq("id", id)
+    .maybeSingle();
+
+  if (error) {
+    console.log(error);
+    return null;
+  }
+
+  return product;
+}

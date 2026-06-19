@@ -43,7 +43,7 @@ function Navbar() {
       <h1 className="text-2xl font-extrabold">Danori</h1>
 
       {/* Desktop View */}
-      <div className="hidden lg:flex lg:w-[60%] border flex-row justify-between items-center gap-2">
+      <div className="hidden lg:flex lg:w-[60%]  flex-row justify-between items-center gap-2">
         <ul className="flex flex-row items-center gap-7  text-base lg:text-lg font-normal">
           {navItems.map((item) => {
             const isActive = pathname === item.href;
