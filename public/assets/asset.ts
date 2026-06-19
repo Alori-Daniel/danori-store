@@ -1,0 +1,47 @@
+export const assets = {
+  friesExtra: "/assets/friesExtra.png",
+  friesLarge: "/assets/friesLarge.png",
+  friesMedium: "/assets/friesMedium.png",
+  friesSmall: "/assets/friesSmall.png",
+  friesFamily: "/assets/friesFamily.png",
+  friesBig: "/assets/friesBig.png",
+
+  regularBurger: "/assets/regularBurger.png",
+  cheeseBurger: "/assets/cheeseBurger.png",
+  classicBurger: "/assets/classicBurger.png",
+  familyBurger: "/assets/familyBurger.png",
+  platterBurger: "/assets/platterBurger.png",
+  overlayBurger: "/assets/overlayBurger.png",
+  blackOverlayBurger: "/assets/blackOverlayBurger.png",
+  bigCheeseBurger: "/assets/bigCheeseBurger.png",
+  beefBurger: "/assets/beefBurger.png",
+
+  boba: "/assets/boba.png",
+  pinkBoba: "/assets/pinkBoba.png",
+  orangeBoba: "/assets/orangeboba.png",
+  whiteBoba: "/assets/whiteBoba.png",
+  yellowBoba: "/assets/yellowboba.png",
+  greenBoba: "/assets/greenboba.png",
+
+  cartAdd: "/assets/cart_add.svg",
+  cartMinus: "/assets/cart_minus.svg",
+  shoppingCart: "/assets/shopping_cart.svg",
+  chevronRight: "/assets/chevron_right.svg",
+  chevronLeft: "/assets/chevron_left.svg",
+  close: "/assets/Close.svg",
+  plusIcon: "/assets/plus_icon.svg",
+  searchIcon: "/assets/search_icon.svg",
+  starIcon: "/assets/star_icon.svg",
+  clockIcon: "/assets/clock_icon.svg",
+  notification: "/assets/notification.svg",
+  contactInfo: "/assets/contact_info.svg",
+  location: "/assets/location.svg",
+  maleAvatar: "/assets/male_avatar.svg",
+
+  instagram: "/assets/Instagram.svg",
+  snapchat: "/assets/Snapchat.svg",
+  tikTok: "/assets/TikTok.svg",
+  facebook: "/assets/Facebook.svg",
+} as const;
+
+export type AssetKey = keyof typeof assets;
