@@ -53,6 +53,8 @@ function LoginPage() {
       setTokenPart(true);
       toast.success("Check your email for the verification code");
     } catch (error) {
+      toast.error("Something went wrong. Please try again later.");
+
       console.error("Something went wrong. Please try again later.", error);
     } finally {
       setLoading(false);
@@ -84,7 +86,7 @@ function LoginPage() {
       router.push("/");
       router.refresh();
     } catch (error) {
-      console.error("Token verification failed", error);
+      // console.error("Token verification failed", error);
       toast.error("Unable to verify token right now");
     } finally {
       setVerifying(false);

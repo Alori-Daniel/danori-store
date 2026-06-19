@@ -3,6 +3,8 @@ import { updateSession } from "@/utils/supabase/proxy";
 
 export async function proxy(request: NextRequest) {
   // update user's auth session
+  console.log("middle au");
+
   return await updateSession(request);
 }
 

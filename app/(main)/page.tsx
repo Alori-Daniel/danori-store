@@ -2,6 +2,7 @@ import HomeProducts from "@/components/HomeProducts";
 import { assets } from "@/public/assets/asset";
 import { GroupedProductParams, ProductParams } from "@/shared.types";
 import { fetchProducts } from "@/utils/actions/product.action";
+import { createClient } from "@/utils/supabase/server";
 import Image from "next/image";
 import React from "react";
 
@@ -27,7 +28,7 @@ for (const product of allProducts) {
 
 const groupedProducts = Object.values(grouped);
 
-function page() {
+async function page() {
   return (
     <div className="space-y-10">
       <div

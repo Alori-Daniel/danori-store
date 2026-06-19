@@ -1,5 +1,6 @@
 "use client";
 import { assets } from "@/public/assets/asset";
+import { User } from "@supabase/supabase-js";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -18,10 +19,11 @@ const navItems: NavItem[] = [
   { label: "Contact", href: "/contact", key: "contact" },
 ];
 
-function Navbar() {
+function Navbar({ user }: User | null) {
   const router = useRouter();
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+  console.log("user", user);
 
   useEffect(() => {
     setIsOpen(false);
@@ -68,6 +70,7 @@ function Navbar() {
             width={30}
             height={30}
           />
+          <p>hello {user?.email}</p>
           <Link
             href={"/login"}
             className=" hidden sm:flex flex-row gap-3 bg-banner px-3 rounded-full justify-center items-center h-9 lg:h-[61px] lg:w-[234px] border"
