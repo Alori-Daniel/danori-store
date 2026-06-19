@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Andada_Pro, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Navbar from "@/components/Navbar";
 
 const andada = Andada_Pro({
   variable: "--font-andada",
