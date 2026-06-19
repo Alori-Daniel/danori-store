@@ -60,39 +60,62 @@ function Navbar() {
           })}
         </ul>
 
-        <button className=" hidden sm:flex flex-row gap-3 bg-banner px-3 rounded-full justify-center items-center h-9 lg:h-[61px] lg:w-[234px] border">
+        <div className="flex flex-row gap-2">
           <Image
-            src={assets.maleAvatar}
-            alt="Male Avatar"
+            src={assets.shoppingCart}
+            alt="shoppingCart"
             width={30}
             height={30}
           />
+          <button className=" hidden sm:flex flex-row gap-3 bg-banner px-3 rounded-full justify-center items-center h-9 lg:h-[61px] lg:w-[234px] border">
+            <Image
+              src={assets.maleAvatar}
+              alt="Male Avatar"
+              width={30}
+              height={30}
+            />
 
-          <p className="text-background lg:text-lg text-base font-normal">
-            Login/Signup
-          </p>
-        </button>
+            <p className="text-background lg:text-lg text-base font-normal">
+              Login/Signup
+            </p>
+          </button>
+        </div>
       </div>
 
       {/* Mobile View */}
-      <button
-        type="button"
-        onClick={() => setIsOpen((prev) => !prev)}
-        aria-expanded={isOpen}
-        aria-controls="mobile-nav"
-        aria-label={isOpen ? "Close navigation menu" : "Open navigation menu"}
-        className="relative flex h-11 w-11 items-center justify-center rounded-full border border-primary/25 bg-background lg:hidden"
-      >
-        <span
-          className={`absolute h-0.5 w-5 bg-banner transition-transform duration-200 ${isOpen ? "rotate-45" : "-translate-y-1.5"}`}
-        />
-        <span
-          className={`absolute h-0.5 w-5 bg-banner transition-opacity duration-200 ${isOpen ? "opacity-0" : "opacity-100"}`}
-        />
-        <span
-          className={`absolute h-0.5 w-5 bg-banner transition-transform duration-200 ${isOpen ? "-rotate-45" : "translate-y-1.5"}`}
-        />
-      </button>
+      <div className="flex items-center gap-3 lg:hidden">
+        <button
+          type="button"
+          aria-label="Open cart"
+          className="flex h-11 w-11 items-center justify-center "
+        >
+          <Image
+            src={assets.shoppingCart}
+            alt="shoppingCart"
+            width={24}
+            height={24}
+          />
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setIsOpen((prev) => !prev)}
+          aria-expanded={isOpen}
+          aria-controls="mobile-nav"
+          aria-label={isOpen ? "Close navigation menu" : "Open navigation menu"}
+          className="relative flex h-11 w-11 items-center justify-center "
+        >
+          <span
+            className={`absolute h-0.5 w-5 bg-banner transition-transform duration-200 ${isOpen ? "rotate-45" : "-translate-y-1.5"}`}
+          />
+          <span
+            className={`absolute h-0.5 w-5 bg-banner transition-opacity duration-200 ${isOpen ? "opacity-0" : "opacity-100"}`}
+          />
+          <span
+            className={`absolute h-0.5 w-5 bg-banner transition-transform duration-200 ${isOpen ? "-rotate-45" : "translate-y-1.5"}`}
+          />
+        </button>
+      </div>
 
       <div
         className={`fixed inset-0 z-40 lg:hidden ${isOpen ? "pointer-events-auto" : "pointer-events-none"}`}
@@ -113,7 +136,7 @@ function Navbar() {
               type="button"
               onClick={() => setIsOpen(false)}
               aria-label="Close navigation menu"
-              className="relative flex h-11 w-11 items-center justify-center rounded-full border border-primary/20 bg-primary/5"
+              className="relative flex h-11 w-11 items-center justify-center rounded-full"
             >
               <span className="absolute h-0.5 w-5 rotate-45 bg-banner" />
               <span className="absolute h-0.5 w-5 -rotate-45 bg-banner" />

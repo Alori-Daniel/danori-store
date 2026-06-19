@@ -1,6 +1,31 @@
+import HomeProducts from "@/components/HomeProducts";
 import { assets } from "@/public/assets/asset";
+import { GroupedProductParams, ProductParams } from "@/shared.types";
+import { fetchProducts } from "@/utils/actions/product.action";
 import Image from "next/image";
 import React from "react";
+
+type GroupedMap = Record<string, GroupedProductParams>;
+
+const allProducts = await fetchProducts();
+
+const grouped: GroupedMap = {};
+
+for (const product of allProducts) {
+  const category = product.categories;
+
+  if (!grouped[category.id]) {
+    grouped[category.id] = {
+      id: category.id,
+      name: category.name,
+      products: [],
+    };
+  }
+
+  grouped[category.id].products.push(product);
+}
+
+const groupedProducts = Object.values(grouped);
 
 function page() {
   return (
@@ -93,6 +118,12 @@ function page() {
             className="w-32 lg:w-72 rounded-4xl border border-gray-300 py-2 pl-3 lg:pl-8 pr-4 outline-none focus:border-primary "
           />
         </div>
+      </div>
+
+      <div>
+        {groupedProducts.map((group) => {
+          return <HomeProducts key={group.id} group={group} />;
+        })}
       </div>
     </div>
   );
