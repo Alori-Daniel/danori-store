@@ -1,5 +1,6 @@
 "use server";
 
+import { AddressParams } from "@/shared.types";
 import { redirect } from "next/navigation";
 import { createClient } from "../supabase/server";
 import { revalidatePath } from "next/cache";
@@ -11,10 +12,11 @@ interface AddressDBParams {
   state: string;
   city: string;
   phone: string;
-  countryCode: string;
-  flag: string;
+  countryCode?: string;
+  flag?: string;
+  isDefault?: boolean;
 }
-export async function fetchAddresses() {
+export async function fetchAddresses(): Promise<AddressParams[]> {
   const supabase = await createClient();
   const { data } = await supabase.auth.getUser();
   const userId = data.user?.id;
@@ -36,7 +38,7 @@ export async function fetchAddresses() {
     throw new Error("Error fetching addresses from address action  ");
   }
 
-  return addresses;
+  return addresses ?? [];
 }
 
 export async function saveAddressDB(formData: AddressDBParams) {
@@ -48,7 +50,31 @@ export async function saveAddressDB(formData: AddressDBParams) {
     console.log("User not authenticated-->>cartActions.ts");
     redirect("/login");
   }
-  console.log("address params--====>", formData);
+
+  const { data: existingAddresses, error: fetchExistingError } = await supabase
+    .from("address")
+    .select("id")
+    .eq("user_id", userId);
+
+  if (fetchExistingError) {
+    console.error("Error fetching existing addresses:", fetchExistingError);
+    return { success: false };
+  }
+
+  const shouldBeDefault =
+    Boolean(formData.isDefault) || (existingAddresses?.length ?? 0) === 0;
+
+  if (shouldBeDefault) {
+    const { error: resetDefaultError } = await supabase
+      .from("address")
+      .update({ is_default: false })
+      .eq("user_id", userId);
+
+    if (resetDefaultError) {
+      console.error("Error resetting default address:", resetDefaultError);
+      return { success: false };
+    }
+  }
 
   const { data: address, error } = await supabase
     .from("address")
@@ -60,9 +86,10 @@ export async function saveAddressDB(formData: AddressDBParams) {
         address: formData.address,
         state: formData.state,
         city: formData.city,
-        country_code: `${formData.countryCode}`,
-        flag: `${formData.flag}`,
+        country_code: `${formData.countryCode ?? "+234"}`,
+        flag: `${formData.flag ?? "🇳🇬"}`,
         phone: `${formData.phone}`,
+        is_default: shouldBeDefault,
       },
     ])
     .eq("user_id", userId)
@@ -70,13 +97,12 @@ export async function saveAddressDB(formData: AddressDBParams) {
 
   if (error) {
     console.error("Error fetching addresses in address action :", error);
-    revalidatePath("/address");
     return { success: false };
   }
 
-  console.log("address sent to DB====-->", address);
   revalidatePath("/address");
-  return { success: true };
+  revalidatePath("/buy-now/[productId]", "page");
+  return { success: true, address: address?.[0] ?? null };
 }
 
 export async function makeDefaultAddress(addressId: string) {
@@ -90,6 +116,16 @@ export async function makeDefaultAddress(addressId: string) {
     // throw new Error("User not authenticated-->>cartActions.ts");
   }
 
+  const { error: resetDefaultError } = await supabase
+    .from("address")
+    .update({ is_default: false })
+    .eq("user_id", userId);
+
+  if (resetDefaultError) {
+    console.log("error resetting previous default address", resetDefaultError);
+    return false;
+  }
+
   const { error } = await supabase
     .from("address")
     .update({ is_default: true })
@@ -98,10 +134,11 @@ export async function makeDefaultAddress(addressId: string) {
     .select();
 
   if (error) {
-    console.log("error deleting user", error);
+    console.log("error updating default address", error);
     return false;
   }
 
   revalidatePath("/address");
+  revalidatePath("/buy-now/[productId]", "page");
   return true;
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import NewAddress from "@/components/NewAddress";
 import { useAppContext } from "@/context/AppContext";
 import { assets } from "@/public/assets/asset";
 import { AddressParams, ProductParams } from "@/shared.types";
@@ -16,19 +17,6 @@ const currencyFormatter = new Intl.NumberFormat("en-NG", {
   maximumFractionDigits: 0,
 });
 
-const dummyAddresses = [
-  {
-    id: "home",
-    title: "Home",
-    address: "Dno. 12-34-12, XYC Apartments, Door Colony, Hyderabad, Telangana",
-  },
-  {
-    id: "office",
-    title: "Office",
-    address: "15 Admiralty Way, Lekki Phase 1, Lagos, Nigeria",
-  },
-] as const;
-
 function BuyNowPage({
   product,
   addresses,
@@ -36,9 +24,8 @@ function BuyNowPage({
   product: ProductParams;
   addresses: AddressParams[];
 }) {
-  const { session, setSession } = useAppContext();
-  const [userAddresses, setUserAddresses] = useState<AddressParams[]>();
-  const [selectedAddress, setSelectedAddress] = useState<AddressParams>();
+  const { session } = useAppContext();
+  const [selectedAddressId, setSelectedAddressId] = useState("");
   const [selectedOrderType, setSelectedOrderType] =
     useState<(typeof orderTypes)[number]>("Delivery");
   const [quantity, setQuantity] = useState(1);
@@ -49,15 +36,29 @@ function BuyNowPage({
       ? product.offer_price
       : product.price;
   const subtotal = unitPrice * quantity;
-  const shippingFee = product.product_shipping_fee;
+  const shippingFee =
+    selectedOrderType === "Pickup" ? 0 : product.product_shipping_fee;
   const total = subtotal + shippingFee;
   const router = useRouter();
+  const selectedAddress = addresses.find(
+    (address) => address.id === selectedAddressId,
+  );
 
   const decreaseQuantity = () =>
     setQuantity((current) => Math.max(1, current - 1));
   const increaseQuantity = () => setQuantity((current) => current + 1);
 
   const payNow = async () => {
+    if (!session?.user.email || !session.user.id) {
+      toast.error("Please sign in to continue");
+      return;
+    }
+
+    if (!selectedAddress) {
+      toast.error("Please select an address");
+      return;
+    }
+
     try {
       const response = await fetch("/api/payment", {
         method: "POST",
@@ -69,17 +70,29 @@ function BuyNowPage({
           amount: total * 100,
         }),
       });
-      const payStackResult = await response.json();
-      if (response.status) {
-        localStorage.setItem(
-          "paymentInformation",
-          JSON.stringify({
-            amount: total,
-            userEmail: session?.user.email,
-          }),
-        );
-        router.push(payStackResult.data.authorization_url);
+
+      if (!response.ok) {
+        throw new Error("Unable to start payment");
       }
+
+      const payStackResult = await response.json();
+
+      localStorage.setItem(
+        "paymentInformation",
+        JSON.stringify({
+          userId: session.user.id,
+          amount: total,
+          userEmail: session.user.email,
+          productName: product.name,
+          quantity,
+          productCategory: product.categories.name,
+          image: primaryImage,
+          fullAddressFields: selectedAddress,
+          orderType: selectedOrderType,
+        }),
+      );
+
+      router.push(payStackResult.data.authorization_url);
     } catch (error) {
       console.log("err", error);
       toast.error("Payment failed. Please try again");
@@ -87,16 +100,28 @@ function BuyNowPage({
       console.log("Payment Processed");
     }
   };
+
   useEffect(() => {
     localStorage.removeItem("paymentInformation");
-    if (addresses) {
-      setUserAddresses(addresses);
-      const defaultAddress = addresses.filter((eachAddress) => {
-        return eachAddress.is_default === true;
-      });
-      setSelectedAddress(defaultAddress[0]);
+  }, []);
+
+  useEffect(() => {
+    if (addresses.length === 0) {
+      setSelectedAddressId("");
+      return;
     }
-  }, [product.price, userAddresses, addresses]);
+
+    setSelectedAddressId((current) => {
+      if (current && addresses.some((address) => address.id === current)) {
+        return current;
+      }
+
+      const defaultAddress =
+        addresses.find((address) => address.is_default) ?? addresses[0];
+
+      return defaultAddress?.id ?? "";
+    });
+  }, [addresses]);
 
   return (
     <section className="space-y-6 px-2 py-4 lg:px-6 lg:py-8">
@@ -124,47 +149,53 @@ function BuyNowPage({
 
             <div className="mt-6 grid gap-4 lg:grid-cols-2">
               {addresses.map((address, index) => {
-                const isActive = selectedAddress === address;
-
-                // console.log("assredd", address);
+                const isActive = selectedAddressId === address.id;
 
                 return (
                   <button
                     key={address.id}
                     type="button"
-                    onClick={() => setSelectedAddress(address)}
+                    onClick={() => setSelectedAddressId(address.id)}
                     className={`rounded-[12px] border p-6 text-left transition-colors ${isActive ? "border-primary bg-primary text-white " : "border-primary border-dashed bg-white text-foreground hover:border-primary/60"}`}
                   >
-                    <div className="flex items-center gap-3">
-                      <Image
-                        src={isActive ? assets.location : assets.orangeLocation}
-                        height={24}
-                        width={24}
-                        alt="address pin"
-                      />
-                      <p className="text-lg font-semibold">{address.title}</p>
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex items-center gap-3">
+                        <Image
+                          src={
+                            isActive ? assets.location : assets.orangeLocation
+                          }
+                          height={24}
+                          width={24}
+                          alt="address pin"
+                        />
+                        <p className="text-lg font-semibold">
+                          {address.title || "Address"}
+                        </p>
+                      </div>
+
+                      {address.is_default && (
+                        <span
+                          className={`rounded-full px-3 py-1 text-xs font-semibold ${isActive ? "bg-white/18 text-white" : "bg-primary/10 text-primary"}`}
+                        >
+                          Default
+                        </span>
+                      )}
                     </div>
                     <p className="mt-5 text-base leading-8">
                       {address.address}
+                    </p>
+                    <p
+                      className={`mt-2 text-sm ${isActive ? "text-white/80" : "text-foreground/55"}`}
+                    >
+                      {[address.city, address.state, address.region]
+                        .filter(Boolean)
+                        .join(", ")}
                     </p>
                   </button>
                 );
               })}
 
-              <button
-                type="button"
-                className="flex min-h-[60px] flex-col items-center justify-center  bg-white p-0 text-center text-primary "
-              >
-                <div className="flex h-16 w-16 items-center justify-center rounded-full border border-primary border-dashed">
-                  <Image
-                    src={assets.plusIcon}
-                    height={28}
-                    width={28}
-                    alt="add address"
-                  />
-                </div>
-                <p className="mt-1 text-lg font-semibold">Add new address</p>
-              </button>
+              <NewAddress triggerVariant="card" />
             </div>
           </section>
 
