@@ -4,7 +4,12 @@ import { OrderParams } from "@/shared.types";
 import Image from "next/image";
 
 const OrderPage = ({ orderData }: { orderData: OrderParams }) => {
-  console.log("order data,", orderData);
+  // console.log("order data,", orderData);
+  const currencyFormatter = new Intl.NumberFormat("en-NG", {
+    style: "currency",
+    currency: "NGN",
+    maximumFractionDigits: 0,
+  });
 
   return (
     <div className="px-6 md:px-16 lg:px-32 pt-14 space-y-10">
@@ -27,7 +32,7 @@ const OrderPage = ({ orderData }: { orderData: OrderParams }) => {
           </h1>
 
           <p className="text-3xl font-medium mt-6">
-            {process.env.NEXT_PUBLIC_CURRENCY} {orderData.amount_paid}
+            {currencyFormatter.format(orderData.amount_paid)}
           </p>
           <hr className="bg-gray-600 my-6" />
           <div className="overflow-x-auto">

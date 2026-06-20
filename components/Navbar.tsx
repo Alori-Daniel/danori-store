@@ -100,7 +100,11 @@ function Navbar() {
               <li
                 key={item.key}
                 onClick={() => handleButtonClick(item.href)}
-                className={`${isActive ? "bg-primary text-white" : ""} cursor-pointer lg:px-6 rounded-3xl py-1`}
+                className={`cursor-pointer rounded-3xl px-4 py-2 transition-[background-color,color,transform,box-shadow] duration-300 ease-out lg:px-6 ${
+                  isActive
+                    ? "bg-primary text-white "
+                    : "text-banner hover:bg-primary/10 hover:text-primary"
+                }`}
               >
                 {item.label}
               </li>
