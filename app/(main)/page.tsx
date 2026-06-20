@@ -37,13 +37,13 @@ async function page() {
           backgroundRepeat: "no-repeat",
         }}
       >
-        <div className="flex-1 space-y-6 text-white lg:mb-3 self-end">
+        <div className="flex-1 space-y-6 text-white mb-0 lg:mb-3 lg:self-end">
           <p>I'm lovin it!</p>
           <h1 className="font-semibold text-xl sm:text-3xl lg:text-6xl">
             Danori's East London
           </h1>
-          <div className="flex flex-row gap-3 max-w-[600px] text-center">
-            <p className="flex flex-row justify-center gap-2 items-center border flex-1 p-3 rounded-4xl">
+          <div className="flex xl:flex-row flex-col gap-3 max-w-[450px] lg:max-w-[600px] text-center">
+            <p className="flex flex-row text-sm sm:text-base justify-center gap-2 items-center border flex-1 p-3 rounded-4xl">
               <Image
                 src={assets.orderComplete}
                 height={20}
@@ -53,7 +53,7 @@ async function page() {
               Minimum Order: 2500
             </p>
 
-            <p className="flex flex-row justify-center gap-2 items-center border flex-1 p-3 rounded-4xl">
+            <p className="flex flex-row text-sm sm:text-base  justify-center gap-2 items-center border flex-1 p-3 rounded-4xl">
               <Image
                 src={assets.motocross}
                 height={20}

@@ -77,7 +77,7 @@ function Navbar() {
     <div
       className={`sticky top-0 z-50 mx-auto flex max-w-[1544px] flex-row items-center justify-between p-3 transition-all duration-300 ease-out lg:px-16 lg:py-6 ${
         isScrolled
-          ? "mt-3 rounded-[30px]  bg-white/95 shadow-[0_22px_60px_rgba(3,8,31,0.16)]"
+          ? "mt-3 rounded-full  bg-white/95 shadow-[0_22px_60px_rgba(3,8,31,0.16)]"
           : "mt-0 rounded-none bg-background shadow-none"
       }`}
     >
@@ -91,8 +91,8 @@ function Navbar() {
       </div>
 
       {/* Desktop View */}
-      <div className="hidden lg:flex lg:w-[60%]  flex-row justify-between items-center gap-2">
-        <ul className="flex flex-row items-center gap-7  text-base lg:text-lg font-normal">
+      <div className="hidden lg:flex w-full xl:w-[70%] mx-2 xl:mx-0   flex-row justify-between items-center gap-2">
+        <ul className="flex flex-row items-center gap-7   text-sm lg:text-lg font-normal">
           {navItems.map((item) => {
             const isActive = pathname === item.href;
 
@@ -186,12 +186,23 @@ function Navbar() {
           aria-label="Open cart"
           className="flex h-11 w-11 items-center justify-center "
         >
-          <Image
+          {/* <Image
             src={assets.shoppingCart}
             alt="shoppingCart"
             width={30}
             height={30}
-          />
+          /> */}
+          <div className=" relative">
+            <Image
+              src={assets.shoppingCart}
+              alt="shoppingCart"
+              width={30}
+              height={30}
+            />
+            <div className="absolute -right-2 -top-2 h-5 w-5 flex flex-row items-center justify-center rounded-full bg-primary">
+              {cart.length}
+            </div>
+          </div>
         </Link>
 
         <button
