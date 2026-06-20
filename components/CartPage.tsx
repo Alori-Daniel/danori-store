@@ -35,7 +35,6 @@ function CartPage({ addresses }: { addresses: AddressParams[] }) {
   const [selectedOrderType, setSelectedOrderType] =
     useState<(typeof orderTypes)[number]>("Delivery");
   const [updatingAddressId, setUpdatingAddressId] = useState("");
-  const [hasHydrated, setHasHydrated] = useState(false);
 
   const selectedAddress = addresses.find(
     (address) => address.id === selectedAddressId,
@@ -138,23 +137,6 @@ function CartPage({ addresses }: { addresses: AddressParams[] }) {
 
   useEffect(() => {
     localStorage.removeItem("paymentInformation");
-
-    setHasHydrated(cartStore.persist.hasHydrated());
-
-    const unsubscribeHydrate = cartStore.persist.onHydrate(() => {
-      setHasHydrated(false);
-    });
-
-    const unsubscribeFinishHydration = cartStore.persist.onFinishHydration(
-      () => {
-        setHasHydrated(true);
-      },
-    );
-
-    return () => {
-      unsubscribeHydrate();
-      unsubscribeFinishHydration();
-    };
   }, []);
 
   useEffect(() => {
@@ -174,16 +156,6 @@ function CartPage({ addresses }: { addresses: AddressParams[] }) {
       return defaultAddress?.id ?? "";
     });
   }, [addresses]);
-
-  if (!hasHydrated) {
-    return (
-      <section className="px-4 py-8 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-6xl rounded-[28px] border border-banner/10 bg-white p-8 text-center shadow-[0_18px_60px_rgba(3,8,31,0.05)]">
-          <h2 className="text-2xl font-extrabold text-banner">Loading cart</h2>
-        </div>
-      </section>
-    );
-  }
 
   if (items.length === 0) {
     return (

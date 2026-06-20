@@ -146,6 +146,7 @@ export async function fetchUserOrders(): Promise<OrderParams[]> {
     .from("orders")
     .select("*")
     .eq("user_id", userId)
+    .order("created_at", { ascending: false })
     .select();
 
   if (error) {

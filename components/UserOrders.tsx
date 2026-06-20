@@ -1,9 +1,28 @@
-"use client";
-
 import { assets } from "@/public/assets/asset";
 import { OrderParams } from "@/shared.types";
 import Image from "next/image";
 import Link from "next/link";
+
+const currencyFormatter = new Intl.NumberFormat("en-NG", {
+  style: "currency",
+  currency: "NGN",
+  maximumFractionDigits: 0,
+});
+
+function formatOrderDate(value?: string) {
+  if (!value) {
+    return "N/A";
+  }
+
+  return new Intl.DateTimeFormat("en-NG", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    timeZone: "Africa/Lagos",
+  }).format(new Date(value));
+}
 
 const UserOrders = ({ userOrders }: { userOrders: OrderParams[] }) => {
   if (userOrders.length === 0) {
@@ -41,9 +60,9 @@ const UserOrders = ({ userOrders }: { userOrders: OrderParams[] }) => {
       <div className="space-y-5">
         <h2 className="text-lg font-medium mt-6">My Orders</h2>
         <div className="max-w-5xl border-t border-gray-300 text-sm">
-          {userOrders.map((order, index) => (
+          {userOrders.map((order) => (
             <div
-              key={index}
+              key={order.id}
               className="flex flex-col md:flex-row gap-5 justify-between p-5 border-b border-gray-300"
             >
               <div className="flex-1 flex gap-5 max-w-80">
@@ -78,15 +97,12 @@ const UserOrders = ({ userOrders }: { userOrders: OrderParams[] }) => {
               <div>
                 <p>Amount paid</p>
                 <p className="font-medium my-auto">
-                  {process.env.NEXT_PUBLIC_CURRENCY}
-                  {order.amount_paid}
+                  {currencyFormatter.format(order.amount_paid)}
                 </p>
               </div>
               <div>
                 <div className="flex flex-col">
-                  <span>
-                    Date : {order.created_at ? order.created_at : "N/A"}
-                  </span>
+                  <span>Date : {formatOrderDate(order.created_at)}</span>
                   <span>status: {order.status}</span>
                   <div className="flex flex-row gap-2">
                     {(order.status === "completed" ||
