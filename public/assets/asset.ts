@@ -23,6 +23,8 @@ export const assets = {
   yellowBoba: "/assets/yellowboba.png",
   greenBoba: "/assets/greenboba.png",
   loginImage: "/assets/loginImage.png",
+  eatpizza: "/assets/eatpizza.png",
+  contactUs: "/assets/contactUs.png",
 
   cartAdd: "/assets/cart_add.svg",
   cartMinus: "/assets/cart_minus.svg",

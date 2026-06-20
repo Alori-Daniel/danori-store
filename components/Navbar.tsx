@@ -266,18 +266,15 @@ function Navbar() {
 
           {user ? (
             <div
-              className={`mt-auto rounded-[28px] border border-banner/10 bg-banner px-4 py-5 text-white transition-[transform,opacity] duration-300 ease-out ${isOpen ? "translate-x-0 opacity-100" : "translate-x-6 opacity-0"}`}
+              className={`mt-auto rounded-[16px] border border-banner/10 bg-banner px-4 py-5 text-white transition-[transform,opacity] duration-300 ease-out ${isOpen ? "translate-x-0 opacity-100" : "translate-x-6 opacity-0"}`}
               style={{ transitionDelay: isOpen ? "260ms" : "0ms" }}
             >
               <div className="flex items-center gap-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-base font-bold text-white">
-                  {displayInitial}
-                </div>
                 <div className="min-w-0">
                   <p className="truncate text-base font-semibold">
-                    {displayName}
+                    Hi, {displayName}
                   </p>
-                  <p className="truncate text-sm text-white/70">{email}</p>
+                  {/* <p className="truncate text-sm text-white/70">{email}</p> */}
                 </div>
               </div>
 

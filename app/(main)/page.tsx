@@ -104,7 +104,7 @@ async function page() {
         <h1 className="font-bold text-lg lg:text-4xl">
           All Offers from Danori's East London
         </h1>
-        <div className="flex flex-row gap-2 items-center">
+        {/* <div className="flex flex-row gap-2 items-center">
           <Image
             src={assets.searchIcon}
             height={28}
@@ -117,7 +117,7 @@ async function page() {
             placeholder="Search offers..."
             className="w-32 lg:w-72 rounded-4xl border border-gray-300 py-2 pl-3 lg:pl-8 pr-4 outline-none focus:border-primary "
           />
-        </div>
+        </div> */}
       </div>
 
       <div>

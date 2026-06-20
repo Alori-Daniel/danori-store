@@ -33,7 +33,7 @@ function ProductItem(product: ProductProp) {
 
         {/* <p>{productItem.description}</p> */}
 
-        <h1 className="font-bold text-lg">₦{productItem.price}</h1>
+        <h1 className="font-bold text-lg">₦{productItem.offer_price}</h1>
       </div>
 
       <div className="flex-1">

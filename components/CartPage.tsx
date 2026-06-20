@@ -35,6 +35,7 @@ function CartPage({ addresses }: { addresses: AddressParams[] }) {
   const [selectedOrderType, setSelectedOrderType] =
     useState<(typeof orderTypes)[number]>("Delivery");
   const [updatingAddressId, setUpdatingAddressId] = useState("");
+  const [isPaying, setIsPaying] = useState(false);
 
   const selectedAddress = addresses.find(
     (address) => address.id === selectedAddressId,
@@ -79,6 +80,10 @@ function CartPage({ addresses }: { addresses: AddressParams[] }) {
   };
 
   const payNow = async () => {
+    if (isPaying) {
+      return;
+    }
+
     if (!session?.user.email) {
       toast.error("Please sign in to continue");
       return;
@@ -95,6 +100,8 @@ function CartPage({ addresses }: { addresses: AddressParams[] }) {
     }
 
     try {
+      setIsPaying(true);
+
       const response = await fetch("/api/payment", {
         method: "POST",
         headers: {
@@ -130,6 +137,8 @@ function CartPage({ addresses }: { addresses: AddressParams[] }) {
     } catch (error) {
       console.log("err", error);
       toast.error("Payment failed. Please try again");
+    } finally {
+      setIsPaying(false);
     }
   };
 
@@ -189,7 +198,7 @@ function CartPage({ addresses }: { addresses: AddressParams[] }) {
   return (
     <section className="space-y-6 px-2 py-4 lg:px-6 lg:py-8">
       <div>
-        <h2 className="text-3xl font-extrabold tracking-tight text-banner lg:text-4xl">
+        <h2 className="sm:text-2xl text-xl font-extrabold tracking-tight text-banner lg:text-4xl">
           Secure Checkout
         </h2>
         <div className="mt-4 h-px w-full bg-banner/20" />
@@ -432,9 +441,10 @@ function CartPage({ addresses }: { addresses: AddressParams[] }) {
             <button
               onClick={payNow}
               type="button"
-              className="mt-6 h-14 w-full rounded-[10px] bg-primary text-base font-semibold text-white transition-transform duration-200 hover:-translate-y-0.5"
+              disabled={isPaying}
+              className="mt-6 h-14 w-full rounded-[10px] bg-primary text-base font-semibold text-white transition-transform duration-200 hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:translate-y-0"
             >
-              Proceed to payment
+              {isPaying ? "Processing payment..." : "Proceed to payment"}
             </button>
           </div>
         </aside>
