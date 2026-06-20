@@ -1,7 +1,9 @@
-import React from "react";
+//@ts-ignore
+import UserOrders from "@/components/UserOrders";
+import { fetchUserOrders } from "@/utils/actions/order.action";
 
-function page() {
-  return <div>Order</div>;
+export default async function Orders() {
+  const userOrders = await fetchUserOrders();
+
+  return <UserOrders userOrders={userOrders} />;
 }
-
-export default page;

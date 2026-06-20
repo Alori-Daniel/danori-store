@@ -42,9 +42,14 @@ export const VerifyPay = ({
           productImage: localStorageItems.image,
           address: localStorageItems.fullAddressFields,
           paymentReference: reference,
+          type: localStorageItems.orderType,
         };
+        console.log("orderIr", orderItems);
 
         const orderId = await createOrder(orderItems);
+
+        console.log("This is Order ID", orderId);
+
         router.replace(`/order/${orderId}`);
       };
 

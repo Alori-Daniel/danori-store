@@ -4,6 +4,7 @@ import NewAddress from "@/components/NewAddress";
 import { useAppContext } from "@/context/AppContext";
 import { assets } from "@/public/assets/asset";
 import { AddressParams, ProductParams } from "@/shared.types";
+import { makeDefaultAddress } from "@/utils/actions/address.action";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -29,6 +30,7 @@ function BuyNowPage({
   const [selectedOrderType, setSelectedOrderType] =
     useState<(typeof orderTypes)[number]>("Delivery");
   const [quantity, setQuantity] = useState(1);
+  const [updatingAddressId, setUpdatingAddressId] = useState("");
 
   const primaryImage = product.image_url_array[0] || assets.regularBurger;
   const unitPrice =
@@ -47,6 +49,27 @@ function BuyNowPage({
   const decreaseQuantity = () =>
     setQuantity((current) => Math.max(1, current - 1));
   const increaseQuantity = () => setQuantity((current) => current + 1);
+
+  const handleSelectAddress = async (address: AddressParams) => {
+    setSelectedAddressId(address.id);
+
+    if (address.is_default) {
+      return;
+    }
+
+    setUpdatingAddressId(address.id);
+
+    const wasUpdated = await makeDefaultAddress(address.id);
+
+    if (!wasUpdated) {
+      toast.error("Could not update default address");
+      setUpdatingAddressId("");
+      return;
+    }
+
+    setUpdatingAddressId("");
+    router.refresh();
+  };
 
   const payNow = async () => {
     if (!session?.user.email || !session.user.id) {
@@ -148,15 +171,17 @@ function BuyNowPage({
             </div>
 
             <div className="mt-6 grid gap-4 lg:grid-cols-2">
-              {addresses.map((address, index) => {
+              {addresses.map((address) => {
                 const isActive = selectedAddressId === address.id;
+                const isUpdating = updatingAddressId === address.id;
 
                 return (
                   <button
                     key={address.id}
                     type="button"
-                    onClick={() => setSelectedAddressId(address.id)}
-                    className={`rounded-[12px] border p-6 text-left transition-colors ${isActive ? "border-primary bg-primary text-white " : "border-primary border-dashed bg-white text-foreground hover:border-primary/60"}`}
+                    onClick={() => void handleSelectAddress(address)}
+                    disabled={isUpdating}
+                    className={`rounded-[12px] border p-6 text-left transition-colors disabled:cursor-not-allowed disabled:opacity-80 ${isActive ? "border-primary bg-primary text-white " : "border-primary border-dashed bg-white text-foreground hover:border-primary/60"}`}
                   >
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex items-center gap-3">
@@ -191,6 +216,13 @@ function BuyNowPage({
                         .filter(Boolean)
                         .join(", ")}
                     </p>
+                    {isUpdating && (
+                      <p
+                        className={`mt-3 text-xs font-semibold ${isActive ? "text-white/85" : "text-primary"}`}
+                      >
+                        Updating default...
+                      </p>
+                    )}
                   </button>
                 );
               })}

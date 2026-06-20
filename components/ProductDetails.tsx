@@ -1,3 +1,4 @@
+"use client";
 import { assets } from "@/public/assets/asset";
 import { ProductParams } from "@/shared.types";
 import Image from "next/image";
@@ -37,6 +38,7 @@ function ProductDetails({ item }: { item: ProductParams }) {
     { label: "Location", value: item.location || "Nigeria" },
   ];
 
+  const handleAddToCart = () => {};
   return (
     <section className="mx-auto max-w-[1544px] px-3 py-6 lg:px-16 lg:py-10">
       <div className="mb-6 flex flex-wrap items-center gap-2 text-sm text-foreground/60">
@@ -163,6 +165,7 @@ function ProductDetails({ item }: { item: ProductParams }) {
 
           <div className="mt-10 grid gap-4 sm:grid-cols-2">
             <button
+              onClick={handleAddToCart}
               type="button"
               className="rounded-2xl border border-banner/15 bg-white px-6 py-4 text-base font-semibold text-banner transition-transform duration-200 hover:-translate-y-0.5"
             >

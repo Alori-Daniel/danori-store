@@ -23,6 +23,7 @@ interface OrderItemsParams {
     title: string;
   };
   paymentReference: string;
+  type: string;
 }
 
 export async function createOrder(orderItems: OrderItemsParams) {
@@ -33,6 +34,25 @@ export async function createOrder(orderItems: OrderItemsParams) {
   if (!userId) {
     throw new Error("User not authenticated");
   }
+
+  console.log("this is server order", {
+    user_id: userId,
+    user_email: orderItems.user_email,
+    amount_paid: orderItems.amount,
+    product_name: orderItems.productName,
+    product_category: orderItems.productCategory,
+    quantity_bought: orderItems.quantity,
+    image_url: orderItems.productImage,
+    status: "processing",
+    region: orderItems.address.region,
+    state: orderItems.address.state,
+    city: orderItems.address.city,
+    address: orderItems.address.address,
+    phone: orderItems.address.phone,
+    country_code: orderItems.address.country_code,
+    type: orderItems.type,
+    reference_paystack: orderItems.paymentReference,
+  });
 
   const { data: orderData, error } = await supabase
     .from("orders")
@@ -52,6 +72,7 @@ export async function createOrder(orderItems: OrderItemsParams) {
         address: orderItems.address.address,
         phone: orderItems.address.phone,
         country_code: orderItems.address.country_code,
+        type: orderItems.type,
         reference_paystack: orderItems.paymentReference,
       },
     ])

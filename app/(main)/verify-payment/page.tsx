@@ -1,5 +1,5 @@
 import { VerifyPay } from "@/components/VerifyPay";
-// import { checkOrder } from "@/utils/actions/order.actions";
+import { checkOrder } from "@/utils/actions/order.action";
 import { redirect } from "next/navigation";
 
 export default async function VerifyPaymentPage({
@@ -11,11 +11,11 @@ export default async function VerifyPaymentPage({
 
   const { reference } = await searchParams;
 
-  // const orderExist = await checkOrder(reference);
+  const orderExist = await checkOrder(reference);
 
-  // if (orderExist && orderExist.length > 0) {
-  //   redirect("/");
-  // }
+  if (orderExist && orderExist.length > 0) {
+    redirect("/");
+  }
 
   const response = await fetch(
     `http://localhost:3000/api/verifyPayment/${reference}`,
