@@ -187,25 +187,30 @@ function CartPage({ addresses }: { addresses: AddressParams[] }) {
 
   if (items.length === 0) {
     return (
-      <section className="px-4 py-8 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-4xl rounded-[32px] border border-dashed border-primary/35 bg-primary/5 p-8 text-center sm:p-12">
-          <p className="text-sm font-semibold uppercase tracking-[0.24em] text-primary">
-            Cart
-          </p>
-          <h1 className="mt-4 text-3xl font-extrabold text-banner sm:text-4xl">
+      <div className="flex min-h-screen px-6 py-6 md:px-16 lg:px-32">
+        <div className="mx-auto mt-6 flex w-full max-w-3xl flex-col items-center justify-center rounded-[12px] px-6 py-14 text-center sm:px-10">
+          <div className="flex h-20 w-20 items-center justify-center rounded-full shadow-2xl bg-white ">
+            <Image
+              src={assets.shoppingCart}
+              alt="Empty orders"
+              width={34}
+              height={34}
+            />
+          </div>
+          <h2 className="mt-6 text-3xl font-extrabold text-banner">
             Your cart is empty
-          </h1>
-          <p className="mt-4 text-sm leading-7 text-foreground/65">
+          </h2>
+          <p className="mt-3 max-w-lg text-sm leading-7 text-foreground/65">
             Add a few products first, then come back here to complete checkout.
           </p>
           <Link
             href="/"
-            className="mt-8 inline-flex h-12 items-center justify-center rounded-full bg-primary px-6 text-sm font-semibold text-white transition-transform duration-200 hover:-translate-y-0.5"
+            className="mt-8 inline-flex h-12 items-center justify-center rounded-[16px] bg-primary px-6 text-sm font-semibold text-white transition-transform duration-200 hover:-translate-y-0.5"
           >
-            Continue shopping
+            Start shopping
           </Link>
         </div>
-      </section>
+      </div>
     );
   }
 

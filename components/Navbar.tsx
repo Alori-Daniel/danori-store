@@ -27,6 +27,7 @@ function Navbar() {
   const router = useRouter();
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const user = session?.user ?? null;
   const email = user?.email ?? "";
   const displayName = email ? email.split("@")[0] : "Guest";
@@ -45,6 +46,19 @@ function Navbar() {
     };
   }, [isOpen]);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 18);
+    };
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   const handleButtonClick = (href: string) => {
     setIsOpen(false);
     router.push(href);
@@ -60,7 +74,13 @@ function Navbar() {
   };
 
   return (
-    <div className="relative shadow-2xl flex flex-row justify-between items-center lg:px-16 p-3 lg:p-6 mx-auto max-w-[1544px] border-primary ">
+    <div
+      className={`sticky top-0 z-50 mx-auto flex max-w-[1544px] flex-row items-center justify-between p-3 transition-all duration-300 ease-out lg:px-16 lg:py-6 ${
+        isScrolled
+          ? "mt-3 rounded-[30px]  bg-white/95 shadow-[0_22px_60px_rgba(3,8,31,0.16)]"
+          : "mt-0 rounded-none bg-background shadow-none"
+      }`}
+    >
       <div className="flex items-end gap-2">
         <h2 className="lg:text-5xl text-2xl font-black tracking-[-0.06em] text-banner sm:text-4xl">
           Danori

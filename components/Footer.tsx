@@ -4,16 +4,16 @@ import React from "react";
 
 const legalLinks = [
   { label: "Terms and conditions", href: "#" },
-  { label: "Privacy", href: "#" },
-  { label: "Cookies", href: "#" },
-  { label: "Modern Slavery Statement", href: "#" },
+  // { label: "Privacy", href: "#" },
+  // { label: "Cookies", href: "#" },
+  // { label: "Modern Slavery Statement", href: "#" },
 ];
 
 const bottomLinks = [
   { label: "Privacy Policy", href: "#" },
-  { label: "Terms", href: "#" },
-  { label: "Pricing", href: "#" },
-  { label: "Do not sell or share my personal information", href: "#" },
+  // { label: "Terms", href: "#" },
+  // { label: "Pricing", href: "#" },
+  // { label: "Do not sell or share my personal information", href: "#" },
 ];
 
 const socialLinks = [
@@ -40,10 +40,7 @@ function Footer() {
               </span>
             </div>
 
-            <p className="max-w-sm text-base leading-7 text-foreground/75">
-              Company # 490039-445, registered with House of companies and
-              serving bold food experiences across the city.
-            </p>
+            <p className="max-w-sm text-base leading-7 text-foreground/75">.</p>
           </div>
 
           <div className="space-y-6 xl:px-4">
