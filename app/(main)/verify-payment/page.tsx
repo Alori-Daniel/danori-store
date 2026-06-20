@@ -18,7 +18,7 @@ export default async function VerifyPaymentPage({
   }
 
   const response = await fetch(
-    `http://localhost:3000/api/verifyPayment/${reference}`,
+    `${process.env.NEXT_PUBLIC_SITE_URL}/api/verifyPayment/${reference}`,
   );
 
   const result = await response.json();

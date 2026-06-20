@@ -25,7 +25,7 @@ export async function POST(request: Request) {
         body: JSON.stringify({
           email,
           amount,
-          callback_url: `http://localhost:3000/${source === "cart" ? "verify-payment-cart" : "verify-payment"}`,
+          callback_url: `${process.env.NEXT_PUBLIC_SITE_URL}/${source === "cart" ? "verify-payment-cart" : "verify-payment"}`,
         }),
       },
     );
