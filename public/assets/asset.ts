@@ -40,6 +40,7 @@ export const assets = {
   maleAvatar: "/assets/male_avatar.svg",
   motocross: "/assets/Motocross.svg",
   orderComplete: "/assets/Order_completed.svg",
+  orangeLocation: "/assets/orangeLocation.svg",
 
   instagram: "/assets/Instagram.svg",
   snapchat: "/assets/Snapchat.svg",

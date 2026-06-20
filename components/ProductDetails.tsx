@@ -168,12 +168,12 @@ function ProductDetails({ item }: { item: ProductParams }) {
             >
               Add to Cart
             </button>
-            <button
-              type="button"
-              className="rounded-2xl bg-banner px-6 py-4 text-base font-semibold text-white shadow-[0_18px_45px_rgba(3,8,31,0.16)] transition-transform duration-200 hover:-translate-y-0.5"
+            <Link
+              href={`/buy-now/${item.id}`}
+              className="rounded-2xl bg-banner px-6 py-4 text-base font-semibold text-white shadow-[0_18px_45px_rgba(3,8,31,0.16)] text-center transition-transform duration-200 hover:-translate-y-0.5"
             >
               Buy Now
-            </button>
+            </Link>
           </div>
         </div>
       </div>

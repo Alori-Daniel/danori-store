@@ -1,4 +1,5 @@
 "use client";
+import { useAppContext } from "@/context/AppContext";
 import { assets } from "@/public/assets/asset";
 import { login, verifyToken } from "@/utils/actions/userAuth.action";
 import { emailValidationSchema } from "@/utils/zodvalidation/form-validation";
@@ -14,6 +15,7 @@ function LoginPage() {
   const [verifying, setVerifying] = useState(false);
   const [tokenPart, setTokenPart] = useState(false);
   const [token, setToken] = useState<string[]>(Array(6).fill(""));
+  const { session, setSession } = useAppContext();
 
   const tokenValue = token.join("");
 
@@ -83,6 +85,8 @@ function LoginPage() {
       }
 
       toast.success("Login verified");
+      //@ts-ignore
+      setSession(result?.session);
       router.push("/");
       router.refresh();
     } catch (error) {
