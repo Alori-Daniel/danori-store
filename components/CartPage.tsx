@@ -4,9 +4,10 @@ import NewAddress from "@/components/NewAddress";
 import { useAppContext } from "@/context/AppContext";
 import { assets } from "@/public/assets/asset";
 import { AddressParams, ProductParams } from "@/shared.types";
+import { cartStore } from "@/store/cart-store";
 import { makeDefaultAddress } from "@/utils/actions/address.action";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
@@ -18,37 +19,44 @@ const currencyFormatter = new Intl.NumberFormat("en-NG", {
   maximumFractionDigits: 0,
 });
 
-function BuyNowPage({
-  product,
-  addresses,
-}: {
-  product: ProductParams;
-  addresses: AddressParams[];
-}) {
+function getUnitPrice(product: ProductParams) {
+  return product.offer_price > 0 && product.offer_price < product.price
+    ? product.offer_price
+    : product.price;
+}
+
+function CartPage({ addresses }: { addresses: AddressParams[] }) {
   const { session } = useAppContext();
+  const items = cartStore((state) => state.items);
+  const increaseQty = cartStore((state) => state.increaseQty);
+  const decreaseQty = cartStore((state) => state.decreaseQty);
+
   const [selectedAddressId, setSelectedAddressId] = useState("");
   const [selectedOrderType, setSelectedOrderType] =
     useState<(typeof orderTypes)[number]>("Delivery");
-  const [quantity, setQuantity] = useState(1);
   const [updatingAddressId, setUpdatingAddressId] = useState("");
+  const [hasHydrated, setHasHydrated] = useState(false);
 
-  const primaryImage = product.image_url_array[0] || assets.regularBurger;
-  const unitPrice =
-    product.offer_price > 0 && product.offer_price < product.price
-      ? product.offer_price
-      : product.price;
-  const subtotal = unitPrice * quantity;
-  const shippingFee =
-    selectedOrderType === "Pickup" ? 0 : product.product_shipping_fee;
-  const total = subtotal + shippingFee;
-  const router = useRouter();
   const selectedAddress = addresses.find(
     (address) => address.id === selectedAddressId,
   );
 
-  const decreaseQuantity = () =>
-    setQuantity((current) => Math.max(1, current - 1));
-  const increaseQuantity = () => setQuantity((current) => current + 1);
+  const itemCount = items.reduce((totalCount, item) => {
+    return totalCount + item.quantity;
+  }, 0);
+
+  const subtotal = items.reduce((runningTotal, item) => {
+    return runningTotal + getUnitPrice(item) * item.quantity;
+  }, 0);
+
+  const shippingFee =
+    selectedOrderType === "Pickup"
+      ? 0
+      : items.reduce((runningTotal, item) => {
+          return runningTotal + item.product_shipping_fee;
+        }, 0);
+
+  const total = subtotal + shippingFee;
 
   const handleSelectAddress = async (address: AddressParams) => {
     setSelectedAddressId(address.id);
@@ -68,12 +76,17 @@ function BuyNowPage({
     }
 
     setUpdatingAddressId("");
-    router.refresh();
+    window.location.reload();
   };
 
   const payNow = async () => {
-    if (!session?.user.email || !session.user.id) {
+    if (!session?.user.email) {
       toast.error("Please sign in to continue");
+      return;
+    }
+
+    if (items.length === 0) {
+      toast.error("Your cart is empty");
       return;
     }
 
@@ -89,9 +102,9 @@ function BuyNowPage({
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          email: session?.user.email,
+          email: session.user.email,
           amount: total * 100,
-          source: "buy-now",
+          source: "cart",
         }),
       });
 
@@ -104,29 +117,44 @@ function BuyNowPage({
       localStorage.setItem(
         "paymentInformation",
         JSON.stringify({
-          userId: session.user.id,
           amount: total,
           userEmail: session.user.email,
-          productName: product.name,
-          quantity,
-          productCategory: product.categories.name,
-          image: primaryImage,
           fullAddressFields: selectedAddress,
           orderType: selectedOrderType,
+          cartItems: items,
         }),
       );
 
-      router.push(payStackResult.data.authorization_url);
+      console.log("items in car", items);
+
+      window.location.assign(payStackResult.data.authorization_url);
     } catch (error) {
       console.log("err", error);
       toast.error("Payment failed. Please try again");
-    } finally {
-      console.log("Payment Processed");
     }
   };
 
+  console.log("items in car", items);
+
   useEffect(() => {
     localStorage.removeItem("paymentInformation");
+
+    setHasHydrated(cartStore.persist.hasHydrated());
+
+    const unsubscribeHydrate = cartStore.persist.onHydrate(() => {
+      setHasHydrated(false);
+    });
+
+    const unsubscribeFinishHydration = cartStore.persist.onFinishHydration(
+      () => {
+        setHasHydrated(true);
+      },
+    );
+
+    return () => {
+      unsubscribeHydrate();
+      unsubscribeFinishHydration();
+    };
   }, []);
 
   useEffect(() => {
@@ -147,6 +175,40 @@ function BuyNowPage({
     });
   }, [addresses]);
 
+  if (!hasHydrated) {
+    return (
+      <section className="px-4 py-8 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-6xl rounded-[28px] border border-banner/10 bg-white p-8 text-center shadow-[0_18px_60px_rgba(3,8,31,0.05)]">
+          <h2 className="text-2xl font-extrabold text-banner">Loading cart</h2>
+        </div>
+      </section>
+    );
+  }
+
+  if (items.length === 0) {
+    return (
+      <section className="px-4 py-8 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-4xl rounded-[32px] border border-dashed border-primary/35 bg-primary/5 p-8 text-center sm:p-12">
+          <p className="text-sm font-semibold uppercase tracking-[0.24em] text-primary">
+            Cart
+          </p>
+          <h1 className="mt-4 text-3xl font-extrabold text-banner sm:text-4xl">
+            Your cart is empty
+          </h1>
+          <p className="mt-4 text-sm leading-7 text-foreground/65">
+            Add a few products first, then come back here to complete checkout.
+          </p>
+          <Link
+            href="/"
+            className="mt-8 inline-flex h-12 items-center justify-center rounded-full bg-primary px-6 text-sm font-semibold text-white transition-transform duration-200 hover:-translate-y-0.5"
+          >
+            Continue shopping
+          </Link>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="space-y-6 px-2 py-4 lg:px-6 lg:py-8">
       <div>
@@ -158,7 +220,7 @@ function BuyNowPage({
 
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1.35fr)_minmax(340px,0.82fr)] xl:items-start">
         <div className="space-y-8">
-          <section className=" p-4  sm:p-6">
+          <section className="p-4 sm:p-6">
             <div className="flex items-center gap-3">
               <Image
                 src={assets.orangeLocation}
@@ -182,7 +244,7 @@ function BuyNowPage({
                     type="button"
                     onClick={() => void handleSelectAddress(address)}
                     disabled={isUpdating}
-                    className={`rounded-[12px] border p-6 text-left transition-colors disabled:cursor-not-allowed disabled:opacity-80 ${isActive ? "border-primary bg-primary text-white " : "border-primary border-dashed bg-white text-foreground hover:border-primary/60"}`}
+                    className={`rounded-[12px] border p-6 text-left transition-colors disabled:cursor-not-allowed disabled:opacity-80 ${isActive ? "border-primary bg-primary text-white" : "border-primary border-dashed bg-white text-foreground hover:border-primary/60"}`}
                   >
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex items-center gap-3">
@@ -232,7 +294,7 @@ function BuyNowPage({
             </div>
           </section>
 
-          <section className=" p-4  sm:p-6">
+          <section className="p-4 sm:p-6">
             <div className="flex items-center gap-3">
               <Image
                 src={assets.orangeLocation}
@@ -275,56 +337,87 @@ function BuyNowPage({
           <div className="flex items-center justify-between gap-3">
             <h3 className="text-2xl font-extrabold text-banner">Cart</h3>
             <p className="text-lg font-semibold text-banner">
-              {quantity} Item{quantity > 1 ? "s" : ""}
+              {itemCount} Item{itemCount > 1 ? "s" : ""}
             </p>
           </div>
 
-          <div className="mt-6 rounded-[12px] p-4">
-            <p className="text-sm text-foreground/55">
-              from{" "}
-              <span className="font-semibold text-primary">
-                {product.brand || product.categories.name}
-              </span>
-            </p>
+          <div className="mt-6 space-y-4">
+            {items.map((item) => {
+              const unitPrice = getUnitPrice(item);
+              const lineTotal =
+                unitPrice * item.quantity +
+                (selectedOrderType === "Delivery"
+                  ? item.product_shipping_fee
+                  : 0);
 
-            <div className="mt-4 flex items-start gap-4">
-              <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-2xl bg-[#fff7ed]">
-                <Image
-                  src={primaryImage}
-                  alt={`${product.name} image`}
-                  fill
-                  className="object-cover"
-                  sizes="80px"
-                />
-              </div>
+              return (
+                <div key={item.id} className="rounded-[14px]   p-4">
+                  <div className="flex items-start gap-4">
+                    <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-2xl bg-[#fff7ed]">
+                      <Image
+                        src={item.image_url_array[0] || assets.regularBurger}
+                        alt={`${item.name} image`}
+                        fill
+                        className="object-cover"
+                        sizes="80px"
+                      />
+                    </div>
 
-              <div className="min-w-0 flex-1">
-                <p className="text-lg font-semibold leading-7 text-banner">
-                  {product.name}
-                </p>
-                <p className="mt-1 text-sm text-foreground/55">
-                  {product.categories.name}
-                </p>
-                <p className="mt-3 text-2xl font-bold text-primary">
-                  {currencyFormatter.format(unitPrice)}
-                </p>
-              </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm text-foreground/55">
+                        from{" "}
+                        <span className="font-semibold text-primary">
+                          {item.brand || item.categories.name}
+                        </span>
+                      </p>
+                      <p className="mt-2 text-lg font-semibold leading-7 text-banner">
+                        {item.name}
+                      </p>
+                      <p className="mt-1 text-sm text-foreground/55">
+                        {item.categories.name}
+                      </p>
+                      <div className="mt-3 flex flex-wrap items-center gap-3">
+                        <span className="text-xl font-bold text-primary">
+                          {currencyFormatter.format(unitPrice)}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => decreaseQty(item.id)}
+                          className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-primary/15 text-lg font-semibold text-primary transition-colors hover:bg-primary hover:text-white"
+                        >
+                          -
+                        </button>
+                        <span className="rounded-full  px-3 py-1 text-base font-semibold text-banner">
+                          {item.quantity}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => increaseQty(item.id)}
+                          className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-primary/15 text-lg font-semibold text-primary transition-colors hover:bg-primary hover:text-white"
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
+                  </div>
 
-              <div className="flex items-center gap-4 rounded-full border border-banner/10 px-3 py-2 text-xl text-banner">
-                <button type="button" onClick={decreaseQuantity}>
-                  -
-                </button>
-                <span className="min-w-4 text-center text-lg font-semibold">
-                  {quantity}
-                </span>
-                <button type="button" onClick={increaseQuantity}>
-                  +
-                </button>
-              </div>
-            </div>
+                  <div className="mt-4 flex items-center justify-between gap-4 text-sm text-foreground/60">
+                    {/* <span>
+                      Delivery fee:{" "}
+                      {selectedOrderType === "Delivery"
+                        ? currencyFormatter.format(item.product_shipping_fee)
+                        : "Free"}
+                    </span> */}
+                    <span className="flex flex-1 flex-row justify-end  font-semibold  text-banner">
+                      {currencyFormatter.format(lineTotal)}
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
           </div>
 
-          <div className="mt-8 rounded-[12px] p-5 ">
+          <div className="mt-8 rounded-[12px] p-5">
             <h4 className="text-lg font-semibold text-banner">Bill details</h4>
 
             <div className="mt-5 space-y-4 text-base text-foreground/70">
@@ -373,4 +466,4 @@ function BuyNowPage({
   );
 }
 
-export default BuyNowPage;
+export default CartPage;

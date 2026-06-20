@@ -80,12 +80,14 @@ function Navbar() {
         </ul>
 
         <div className="flex flex-row gap-2">
-          <Image
-            src={assets.shoppingCart}
-            alt="shoppingCart"
-            width={30}
-            height={30}
-          />
+          <Link href={"/cart"}>
+            <Image
+              src={assets.shoppingCart}
+              alt="shoppingCart"
+              width={30}
+              height={30}
+            />
+          </Link>
           {user ? (
             <div className="flex items-center gap-2 rounded-full border border-banner/10 bg-white px-2 py-2 ">
               <div className="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-base font-bold text-white">
@@ -147,7 +149,8 @@ function Navbar() {
 
       {/* Mobile View */}
       <div className="flex items-center gap-3 lg:hidden">
-        <button
+        <Link
+          href={"/cart"}
           type="button"
           aria-label="Open cart"
           className="flex h-11 w-11 items-center justify-center "
@@ -155,10 +158,10 @@ function Navbar() {
           <Image
             src={assets.shoppingCart}
             alt="shoppingCart"
-            width={24}
-            height={24}
+            width={30}
+            height={30}
           />
-        </button>
+        </Link>
 
         <button
           type="button"

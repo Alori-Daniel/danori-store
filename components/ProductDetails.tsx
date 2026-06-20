@@ -1,9 +1,11 @@
 "use client";
 import { assets } from "@/public/assets/asset";
 import { ProductParams } from "@/shared.types";
+import { cartStore } from "@/store/cart-store";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import toast from "react-hot-toast";
 
 const currencyFormatter = new Intl.NumberFormat("en-NG", {
   style: "currency",
@@ -38,7 +40,12 @@ function ProductDetails({ item }: { item: ProductParams }) {
     { label: "Location", value: item.location || "Nigeria" },
   ];
 
-  const handleAddToCart = () => {};
+  const handleAddToCart = () => {
+    const addItem = cartStore.getState().addItem;
+
+    addItem(item);
+    toast.success("Added to cart");
+  };
   return (
     <section className="mx-auto max-w-[1544px] px-3 py-6 lg:px-16 lg:py-10">
       <div className="mb-6 flex flex-wrap items-center gap-2 text-sm text-foreground/60">

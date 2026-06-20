@@ -13,7 +13,7 @@ interface PaystackResponse {
 export async function POST(request: Request) {
   try {
     console.log("Payment API Request Received");
-    const { email, amount } = await request.json();
+    const { email, amount, source } = await request.json();
     const response = await fetch(
       "https://api.paystack.co/transaction/initialize",
       {
@@ -25,7 +25,7 @@ export async function POST(request: Request) {
         body: JSON.stringify({
           email,
           amount,
-          callback_url: "http://localhost:3000/verify-payment",
+          callback_url: `http://localhost:3000/${source === "cart" ? "verify-payment-cart" : "verify-payment"}`,
         }),
       },
     );
