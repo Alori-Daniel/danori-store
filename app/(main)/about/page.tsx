@@ -26,7 +26,7 @@ const stats = [
 
 export default function Page() {
   return (
-    <section className="space-y-8 px-3 py-6 lg:px-16 lg:py-10">
+    <section className="space-y-10">
       <div
         className="h-[283px] relative flex flex-row items-center lg:h-[477px] p-16  rounded-lg"
         style={{
@@ -34,16 +34,13 @@ export default function Page() {
           backgroundRepeat: "no-repeat",
         }}
       >
-        <div className="flex-1 text-banner space-y-6 lg:mb-3 self-end">
-          <p>
-            We focus on food people actually come back for: bold burgers,
-            familiar sides, easy drinks, and crowd-pleasing bundles.
-          </p>
+        <div className="flex-1 text-banner space-y-6 lg:mb-3 lg:self-end">
+          <p>Danori is a Resturant for those who want to be different.</p>
           <h1 className="font-semibold text-banner text-xl sm:text-3xl lg:text-6xl">
             Danori's East London
           </h1>
-          <div className="flex text-banner flex-row gap-3 max-w-[600px] text-center">
-            <p className="flex flex-row justify-center gap-2 items-center border flex-1 p-3 rounded-4xl">
+          <div className="flex xl:flex-row flex-col gap-3 max-w-[350px] xl:max-w-[600px] text-center">
+            <p className="flex flex-row text-sm sm:text-base justify-center gap-2 items-center border flex-1 p-3 rounded-4xl">
               <Image
                 src={assets.orderComplete}
                 height={20}
@@ -53,7 +50,7 @@ export default function Page() {
               Minimum Order: 2500
             </p>
 
-            <p className="flex flex-row justify-center gap-2 items-center border flex-1 p-3 rounded-4xl">
+            <p className="flex flex-row text-sm sm:text-base justify-center gap-2 items-center border flex-1 p-3 rounded-4xl">
               <Image
                 src={assets.motocross}
                 height={20}

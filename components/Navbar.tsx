@@ -85,7 +85,7 @@ function Navbar() {
         <h2 className="lg:text-5xl text-2xl font-black tracking-[-0.06em] text-banner sm:text-4xl">
           Danori
         </h2>
-        <span className="mb-0 inline-flex h-10 items-center rounded-md bg-black px-2 text-lg font-black uppercase tracking-[-0.04em] text-white">
+        <span className="mb-0 inline-flex h-7 px-1 sm:h-10 items-center rounded-md bg-black sm:px-2 text-lg font-black uppercase tracking-[-0.04em] text-white">
           NG
         </span>
       </div>

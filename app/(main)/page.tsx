@@ -42,7 +42,7 @@ async function page() {
           <h1 className="font-semibold text-xl sm:text-3xl lg:text-6xl">
             Danori's East London
           </h1>
-          <div className="flex xl:flex-row flex-col gap-3 max-w-[450px] lg:max-w-[600px] text-center">
+          <div className="flex xl:flex-row flex-col gap-3 max-w-[350px] xl:max-w-[600px] text-center">
             <p className="flex flex-row text-sm sm:text-base justify-center gap-2 items-center border flex-1 p-3 rounded-4xl">
               <Image
                 src={assets.orderComplete}
