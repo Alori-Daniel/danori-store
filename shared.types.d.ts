@@ -77,4 +77,5 @@ export interface OrderParams {
   country_code?: string | null;
   created_at?: string; // ISO timestamp
   updated_at?: string; // ISO timestamp
+  type: string;
 }
