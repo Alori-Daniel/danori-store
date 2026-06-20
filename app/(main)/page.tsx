@@ -50,7 +50,7 @@ async function page() {
                 width={20}
                 alt="order icon"
               />
-              Minimum Order: 12 GBP
+              Minimum Order: 2500
             </p>
 
             <p className="flex flex-row justify-center gap-2 items-center border flex-1 p-3 rounded-4xl">

@@ -1,10 +1,41 @@
 "use client";
 
+import { assets } from "@/public/assets/asset";
 import { OrderParams } from "@/shared.types";
 import Image from "next/image";
 import Link from "next/link";
 
 const UserOrders = ({ userOrders }: { userOrders: OrderParams[] }) => {
+  if (userOrders.length === 0) {
+    return (
+      <div className="flex min-h-screen px-6 py-6 md:px-16 lg:px-32">
+        <div className="mx-auto mt-6 flex w-full max-w-3xl flex-col items-center justify-center rounded-[12px] px-6 py-14 text-center sm:px-10">
+          <div className="flex h-20 w-20 items-center justify-center rounded-full shadow-2xl bg-white ">
+            <Image
+              src={assets.shoppingCart}
+              alt="Empty orders"
+              width={34}
+              height={34}
+            />
+          </div>
+          <h2 className="mt-6 text-3xl font-extrabold text-banner">
+            No orders yet
+          </h2>
+          <p className="mt-3 max-w-lg text-sm leading-7 text-foreground/65">
+            You have not placed any orders yet. Add something to your cart and
+            complete checkout to see it here.
+          </p>
+          <Link
+            href="/"
+            className="mt-8 inline-flex h-12 items-center justify-center rounded-[16px] bg-primary px-6 text-sm font-semibold text-white transition-transform duration-200 hover:-translate-y-0.5"
+          >
+            Start shopping
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col justify-between px-6 md:px-16 lg:px-32 py-6 min-h-screen">
       <div className="space-y-5">

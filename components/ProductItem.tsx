@@ -1,8 +1,12 @@
+"use client";
+
 import { assets } from "@/public/assets/asset";
 import { ProductParams } from "@/shared.types";
+import { cartStore } from "@/store/cart-store";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import toast from "react-hot-toast";
 
 interface ProductProp {
   product: ProductParams;
@@ -10,6 +14,15 @@ interface ProductProp {
 
 function ProductItem(product: ProductProp) {
   const { product: productItem } = product;
+
+  const handleAddToCart = (event: React.MouseEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    cartStore.getState().addItem(productItem);
+
+    toast.success("Added to Cart");
+  };
+
   return (
     <Link
       href={`/product/${productItem.id}`}
@@ -32,7 +45,10 @@ function ProductItem(product: ProductProp) {
           alt={`${productItem.name} image`}
         />
       </div>
-      <div className="absolute flex flex-row items-center justify-center bottom-0 right-0 w-16 h-16 lg:w-20 lg:h-20 bg-white/80 rounded-tl-[40px] lg:rounded-tl-[45px]">
+      <div
+        onClick={handleAddToCart}
+        className="absolute flex cursor-pointer flex-row items-center justify-center bottom-0 right-0 w-16 h-16 lg:w-20 lg:h-20 bg-white/80 rounded-tl-[40px] lg:rounded-tl-[45px]"
+      >
         <Image src={assets.plusIcon} height={39} width={39} alt="plus icon" />
       </div>
     </Link>

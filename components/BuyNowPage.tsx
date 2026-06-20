@@ -199,13 +199,13 @@ function BuyNowPage({
                         </p>
                       </div>
 
-                      {address.is_default && (
+                      {/* {address.is_default && (
                         <span
                           className={`rounded-full px-3 py-1 text-xs font-semibold ${isActive ? "bg-white/18 text-white" : "bg-primary/10 text-primary"}`}
                         >
                           Default
                         </span>
-                      )}
+                      )} */}
                     </div>
                     <p className="mt-5 text-base leading-8">
                       {address.address}

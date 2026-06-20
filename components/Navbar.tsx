@@ -1,6 +1,7 @@
 "use client";
 import { useAppContext } from "@/context/AppContext";
 import { assets } from "@/public/assets/asset";
+import { cartStore } from "@/store/cart-store";
 import { signOut } from "@/utils/actions/userAuth.action";
 import Image from "next/image";
 import Link from "next/link";
@@ -30,6 +31,7 @@ function Navbar() {
   const email = user?.email ?? "";
   const displayName = email ? email.split("@")[0] : "Guest";
   const displayInitial = displayName.charAt(0).toUpperCase();
+  const cart = cartStore((state) => state.items);
 
   useEffect(() => {
     setIsOpen(false);
@@ -58,8 +60,15 @@ function Navbar() {
   };
 
   return (
-    <div className="relative flex flex-row justify-between items-center lg:px-16 p-3 lg:p-6 mx-auto max-w-[1544px] border-primary ">
-      <h1 className="text-2xl font-extrabold">Danori</h1>
+    <div className="relative shadow-2xl flex flex-row justify-between items-center lg:px-16 p-3 lg:p-6 mx-auto max-w-[1544px] border-primary ">
+      <div className="flex items-end gap-2">
+        <h2 className="lg:text-5xl text-2xl font-black tracking-[-0.06em] text-banner sm:text-4xl">
+          Danori
+        </h2>
+        <span className="mb-0 inline-flex h-10 items-center rounded-md bg-black px-2 text-lg font-black uppercase tracking-[-0.04em] text-white">
+          NG
+        </span>
+      </div>
 
       {/* Desktop View */}
       <div className="hidden lg:flex lg:w-[60%]  flex-row justify-between items-center gap-2">
@@ -79,23 +88,25 @@ function Navbar() {
           })}
         </ul>
 
-        <div className="flex flex-row gap-2">
+        <div className="flex flex-row gap-2 items-center">
           <Link href={"/cart"}>
-            <Image
-              src={assets.shoppingCart}
-              alt="shoppingCart"
-              width={30}
-              height={30}
-            />
+            <div className=" relative">
+              <Image
+                src={assets.shoppingCart}
+                alt="shoppingCart"
+                width={30}
+                height={30}
+              />
+              <div className="absolute -right-2 -top-2 h-5 w-5 flex flex-row items-center justify-center rounded-full bg-primary">
+                {cart.length}
+              </div>
+            </div>
           </Link>
           {user ? (
-            <div className="flex items-center gap-2 rounded-full border border-banner/10 bg-white px-2 py-2 ">
-              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-base font-bold text-white">
-                {displayInitial}
-              </div>
+            <div className="flex items-center gap-2  px-2 py-2 ">
               <div className="pr-1">
-                <p className="max-w-[110px] truncate text-sm font-semibold text-banner">
-                  {displayName}
+                <p className="max-w-[110px] truncate text-base font-semibold text-banner">
+                  Hi,{displayName}
                 </p>
               </div>
               <button
