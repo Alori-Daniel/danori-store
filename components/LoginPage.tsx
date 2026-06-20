@@ -5,7 +5,7 @@ import { login, verifyToken } from "@/utils/actions/userAuth.action";
 import { emailValidationSchema } from "@/utils/zodvalidation/form-validation";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import toast from "react-hot-toast";
 
 function LoginPage() {
@@ -15,6 +15,7 @@ function LoginPage() {
   const [verifying, setVerifying] = useState(false);
   const [tokenPart, setTokenPart] = useState(false);
   const [token, setToken] = useState<string[]>(Array(6).fill(""));
+  const tokenInputRefs = useRef<Array<HTMLInputElement | null>>([]);
   const { session, setSession } = useAppContext();
 
   const tokenValue = token.join("");
@@ -27,6 +28,10 @@ function LoginPage() {
       updated[index] = nextValue;
       return updated;
     });
+
+    if (nextValue && index < token.length - 1) {
+      tokenInputRefs.current[index + 1]?.focus();
+    }
   };
 
   const handleLogin = async (event?: React.FormEvent) => {
@@ -125,10 +130,13 @@ function LoginPage() {
               </div>
 
               <form className="mt-10 space-y-6" onSubmit={handleVerifyToken}>
-                <div className="grid grid-cols-3 gap-3 sm:grid-cols-6">
+                <div className="grid grid-cols-6 gap-2 sm:gap-3">
                   {token.map((digit, index) => (
                     <input
                       key={index}
+                      ref={(element) => {
+                        tokenInputRefs.current[index] = element;
+                      }}
                       value={digit}
                       onChange={(event) =>
                         updateTokenDigit(index, event.target.value)
@@ -136,7 +144,7 @@ function LoginPage() {
                       inputMode="numeric"
                       maxLength={1}
                       aria-label={`Token digit ${index + 1}`}
-                      className="h-14 rounded-2xl border border-primary/15  text-center text-xl font-bold text-banner outline-none transition-colors focus:border-primary"
+                      className="h-12 min-w-0 rounded-xl border border-primary/15 text-center text-lg font-bold text-banner outline-none transition-colors focus:border-primary sm:h-14 sm:rounded-2xl sm:text-xl"
                     />
                   ))}
                 </div>

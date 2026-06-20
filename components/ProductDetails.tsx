@@ -91,12 +91,12 @@ function ProductDetails({ item }: { item: ProductParams }) {
 
         <div className="flex flex-col">
           <div className="flex flex-wrap items-center gap-3">
-            <span className="rounded-full bg-primary/10 px-4 py-2 text-sm font-semibold text-primary">
+            <span className=" px-4 py-2 text-sm font-semibold text-primary">
               {item.categories.name}
             </span>
-            <span className="rounded-full border border-banner/10 bg-banner/5 px-4 py-2 text-sm font-medium text-banner">
+            {/* <span className="rounded-full border border-banner/10 bg-banner/5 px-4 py-2 text-sm font-medium text-banner">
               {titleCase(item.status || "available")}
-            </span>
+            </span> */}
           </div>
 
           <h1 className="mt-5 text-3xl font-extrabold tracking-tight text-banner sm:text-4xl lg:text-5xl">
@@ -180,7 +180,7 @@ function ProductDetails({ item }: { item: ProductParams }) {
             </button>
             <Link
               href={`/buy-now/${item.id}`}
-              className="rounded-2xl bg-banner px-6 py-4 text-base font-semibold text-white shadow-[0_18px_45px_rgba(3,8,31,0.16)] text-center transition-transform duration-200 hover:-translate-y-0.5"
+              className="rounded-2xl bg-banner px-6 py-4 text-base font-semibold text-white  text-center transition-transform duration-200 hover:-translate-y-0.5"
             >
               Buy Now
             </Link>
