@@ -114,7 +114,7 @@ function Navbar() {
 
         <div className="flex flex-row gap-2 items-center">
           <Link href={"/cart"}>
-            <div className=" relative">
+            <div className=" relative mr-3">
               <Image
                 src={assets.shoppingCart}
                 alt="shoppingCart"

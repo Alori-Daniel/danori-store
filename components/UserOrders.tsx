@@ -1,7 +1,10 @@
+"use client";
+
 import { assets } from "@/public/assets/asset";
 import { OrderParams } from "@/shared.types";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 
 const currencyFormatter = new Intl.NumberFormat("en-NG", {
   style: "currency",
@@ -25,10 +28,49 @@ function formatOrderDate(value?: string) {
 }
 
 const UserOrders = ({ userOrders }: { userOrders: OrderParams[] }) => {
+  const sectionRef = useRef<HTMLDivElement | null>(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const node = sectionRef.current;
+
+    if (!node) {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) {
+          return;
+        }
+
+        setIsVisible(true);
+        observer.disconnect();
+      },
+      {
+        threshold: 0.12,
+        rootMargin: "0px 0px -8% 0px",
+      },
+    );
+
+    observer.observe(node);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
   if (userOrders.length === 0) {
     return (
-      <div className="flex min-h-screen px-6 py-6 md:px-16 lg:px-32">
-        <div className="mx-auto mt-6 flex w-full max-w-3xl flex-col items-center justify-center rounded-[12px] px-6 py-14 text-center sm:px-10">
+      <div
+        ref={sectionRef}
+        className="flex min-h-screen px-6 py-6 md:px-16 lg:px-32"
+      >
+        <div
+          className={`mx-auto mt-6 flex w-full max-w-3xl flex-col items-center justify-center rounded-[12px] px-6 py-14 text-center transition-all duration-500 ease-out sm:px-10 motion-reduce:transform-none motion-reduce:transition-none ${
+            isVisible ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
+          }`}
+        >
           <div className="flex h-20 w-20 items-center justify-center rounded-full shadow-2xl bg-white ">
             <Image
               src={assets.shoppingCart}
@@ -56,14 +98,28 @@ const UserOrders = ({ userOrders }: { userOrders: OrderParams[] }) => {
   }
 
   return (
-    <div className="flex flex-col justify-between px-6 md:px-16 lg:px-32 py-6 min-h-screen">
+    <div
+      ref={sectionRef}
+      className="flex min-h-screen flex-col justify-between px-6 py-6 md:px-16 lg:px-32"
+    >
       <div className="mx-auto w-full max-w-5xl space-y-5">
-        <h2 className="text-lg font-medium mt-6">My Orders</h2>
+        <h2
+          className={`mt-6 text-lg font-medium transition-all duration-500 ease-out motion-reduce:transform-none motion-reduce:transition-none ${
+            isVisible ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"
+          }`}
+        >
+          My Orders
+        </h2>
         <div className="w-full border-t border-gray-300 text-sm">
-          {userOrders.map((order) => (
+          {userOrders.map((order, index) => (
             <div
               key={order.id}
-              className="flex flex-col md:flex-row gap-5 justify-between p-5 border-b border-gray-300"
+              className={`flex flex-col gap-5 justify-between border-b border-gray-300 p-5 transition-all duration-500 ease-out motion-reduce:transform-none motion-reduce:transition-none md:flex-row ${
+                isVisible ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
+              }`}
+              style={{
+                transitionDelay: isVisible ? `${100 + index * 60}ms` : "0ms",
+              }}
             >
               <div className="flex-1 flex gap-5 max-w-80">
                 <Image
