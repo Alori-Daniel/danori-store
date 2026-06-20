@@ -58,7 +58,7 @@ function Footer() {
               <input
                 type="email"
                 placeholder="youremail@gmail.com"
-                className="h-14 flex-1 rounded-full border border-transparent bg-white px-6 text-base text-banner outline-none placeholder:text-foreground/35 focus:border-primary"
+                className="h-14 flex-1 py-4 sm:py-0 rounded-full border border-transparent bg-white px-6 text-base text-banner outline-none placeholder:text-foreground/35 focus:border-primary"
               />
               <button
                 type="button"
