@@ -93,13 +93,17 @@ export async function GET(
   const { reference } = await params;
   try {
     console.log("Payment API Request Received");
+    const paystackSecret = process.env.PAYSTACK_SECRET_KEY;
+    if (!paystackSecret) {
+      throw new Error("Missing PAYSTACK_SECRET_KEY");
+    }
 
     const response = await fetch(
       `https://api.paystack.co/transaction/verify/${reference}`,
       {
         method: "GET",
         headers: {
-          Authorization: `Bearer sk_test_340f30df769598b07cd35784839df9add1cb0908`,
+          Authorization: `Bearer ${paystackSecret}`,
           "Content-Type": "application/json",
         },
       },

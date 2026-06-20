@@ -317,23 +317,25 @@ function BuyNowPage({
                     <span className="text-xl font-bold text-primary">
                       {currencyFormatter.format(unitPrice)}
                     </span>
-                    <button
-                      type="button"
-                      onClick={decreaseQuantity}
-                      className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-primary/15 text-lg font-semibold text-primary transition-colors hover:bg-primary hover:text-white"
-                    >
-                      -
-                    </button>
-                    <span className="rounded-full px-3 py-1 text-base font-semibold text-banner">
-                      {quantity}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={increaseQuantity}
-                      className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-primary/15 text-lg font-semibold text-primary transition-colors hover:bg-primary hover:text-white"
-                    >
-                      +
-                    </button>
+                    <div>
+                      <button
+                        type="button"
+                        onClick={decreaseQuantity}
+                        className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-primary/15 text-lg font-semibold text-primary transition-colors hover:bg-primary hover:text-white"
+                      >
+                        -
+                      </button>
+                      <span className="rounded-full px-3 py-1 text-base font-semibold text-banner">
+                        {quantity}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={increaseQuantity}
+                        className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-primary/15 text-lg font-semibold text-primary transition-colors hover:bg-primary hover:text-white"
+                      >
+                        +
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
