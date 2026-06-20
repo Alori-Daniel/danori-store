@@ -8,27 +8,26 @@ import React from "react";
 
 type GroupedMap = Record<string, GroupedProductParams>;
 
-const allProducts = await fetchProducts();
+async function page() {
+  const allProducts = await fetchProducts();
 
-const grouped: GroupedMap = {};
+  const grouped: GroupedMap = {};
 
-for (const product of allProducts) {
-  const category = product.categories;
+  for (const product of allProducts) {
+    const category = product.categories;
 
-  if (!grouped[category.id]) {
-    grouped[category.id] = {
-      id: category.id,
-      name: category.name,
-      products: [],
-    };
+    if (!grouped[category.id]) {
+      grouped[category.id] = {
+        id: category.id,
+        name: category.name,
+        products: [],
+      };
+    }
+
+    grouped[category.id].products.push(product);
   }
 
-  grouped[category.id].products.push(product);
-}
-
-const groupedProducts = Object.values(grouped);
-
-async function page() {
+  const groupedProducts = Object.values(grouped);
   return (
     <div className="space-y-10">
       <div
